@@ -3,8 +3,6 @@
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from typing import NoReturn
-
 from PySide6.QtCore import QObject
 from PySide6.QtMultimedia import QSoundEffect, QAudioDevice, QMediaDevices
 from PySide6.QtWidgets import QApplication

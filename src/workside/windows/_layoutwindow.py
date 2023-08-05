@@ -1,20 +1,18 @@
-"""LayoutWindow"""
+"""LayoutWindow subclasses BaseWindow providing the visual widgets in the
+window. While this class should not provide business logic, it should
+implement methods for dynamic functionalities of the widgets."""
 #  MIT Licence
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
-
-from typing import NoReturn
 
 from PySide6.QtGui import QKeyEvent, QTextCursor
 from PySide6.QtWidgets import QVBoxLayout, QGridLayout, QHBoxLayout
 from PySide6.QtWidgets import QWidget
 from icecream import ic
-from worktoy.stringtools import monoSpace
 
-from visualchess import PieceGrabbing
-from workside.styles import headerStyle
+from workside.styles import headerStyle, labelStyle
 from workside.widgets import CoreWidget, VSpacer, HSpacer
-from workside.widgets import DoubleSpacer, DebugButton
+from workside.widgets import DoubleSpacer
 from workside.widgets import Label
 from workside.windows import BaseWindow
 
@@ -27,13 +25,9 @@ ic.configureOutput(includeContext=True)
 
 
 class LayoutWindow(BaseWindow):
-  """A subclass of BaseWindow that provides layouts and widgets for a simple
-  word processing application.
-
-  This class adds a vertical layout to the QMainWindow and populates it
-  with a QLabel, a QLineEdit, and a QTextEdit.
-  The QLabel displays the current file name, the QLineEdit is used for
-  entering search terms, and the QTextEdit is used for editing text."""
+  """LayoutWindow subclasses BaseWindow providing the visual widgets in the
+  window. While this class should not provide business logic, it should
+  implement methods for dynamic functionalities of the widgets."""
 
   def __init__(self, parent: QWidget = None) -> None:
     BaseWindow.__init__(self, parent)
@@ -41,8 +35,7 @@ class LayoutWindow(BaseWindow):
     self._debugButton = None
     self._debugButton2 = None
     self._baseWidget = None
-    self._boardWidget = None
-    self._fileLabel = None
+    self._structureLabel = None
     self._centralWidget = None
     self._baseGridLayout = None
     self._baseVerticalBoxLayout = None
@@ -51,7 +44,7 @@ class LayoutWindow(BaseWindow):
     self._verticalSpacers = []
     self._doubleSpacers = []
 
-  def _createBaseVerticalLayout(self) -> NoReturn:
+  def _createBaseVerticalLayout(self) -> None:
     """Creator-function for the vertical base layout"""
     self._baseVerticalBoxLayout = QVBoxLayout()
 
@@ -64,20 +57,7 @@ class LayoutWindow(BaseWindow):
       return self._baseVerticalBoxLayout
     raise TypeError
 
-  def _createBoardWidget(self) -> NoReturn:
-    """Creator-function for the vertical base layout"""
-    self._boardWidget = PieceGrabbing()
-
-  def _getBoardWidget(self) -> PieceGrabbing:
-    """Getter-function for the vertical base layout"""
-    if self._boardWidget is None:
-      self._createBoardWidget()
-      return self._getBoardWidget()
-    if isinstance(self._boardWidget, PieceGrabbing):
-      return self._boardWidget
-    raise TypeError
-
-  def _createHorizontalBoxLayout(self) -> NoReturn:
+  def _createHorizontalBoxLayout(self) -> None:
     """Creator function for the horizontal layout"""
     self._baseHorizontalBoxLayout = QHBoxLayout()
 
@@ -90,7 +70,7 @@ class LayoutWindow(BaseWindow):
       return self._baseHorizontalBoxLayout
     raise TypeError
 
-  def _createBaseLayout(self) -> NoReturn:
+  def _createBaseLayout(self) -> None:
     """Creator-function for the base layout"""
     self._baseGridLayout = QGridLayout()
 
@@ -102,38 +82,21 @@ class LayoutWindow(BaseWindow):
     if isinstance(self._baseGridLayout, QGridLayout):
       return self._baseGridLayout
 
-  def _createBaseHeaderWidget(self) -> NoReturn:
+  def _createBaseHeaderWidget(self) -> None:
     """Creator-function for the header widget"""
     self._baseHeaderWidget = Label()
     headerStyle @ self._baseHeaderWidget
-    self._baseHeaderWidget.setText('Welcome!')
+    self._baseHeaderWidget.setText('Welcome to MineLive!')
 
   def _getBaseHeaderWidget(self) -> CoreWidget:
     """Getter-function for the header widget"""
     if self._baseHeaderWidget is None:
       self._createBaseHeaderWidget()
-      return self._getBaseHeaderWidget()
     if isinstance(self._baseHeaderWidget, CoreWidget):
       return self._baseHeaderWidget
     raise TypeError
 
-  def _createDebugButton(self) -> NoReturn:
-    """Creator-function for the button"""
-    self._debugButton = DebugButton()
-    msg = """Reset (press and hold)"""
-    self._debugButton.text = monoSpace(msg)
-    self._debugButton.update()
-
-  def _getDebugButton(self) -> DebugButton:
-    """Getter-function for the button"""
-    if self._debugButton is None:
-      self._createDebugButton()
-      return self._getDebugButton()
-    if isinstance(self._debugButton, DebugButton):
-      return self._debugButton
-    raise TypeError
-
-  def _createBaseWidget(self) -> NoReturn:
+  def _createBaseWidget(self) -> None:
     """Creator-function for the base widget"""
     self._baseWidget = CoreWidget()
 
@@ -144,6 +107,15 @@ class LayoutWindow(BaseWindow):
       return self._getBaseWidget()
     if isinstance(self._baseWidget, CoreWidget):
       return self._baseWidget
+
+  def _createStructureLabel(self) -> None:
+    """Creator-function for label indicating any present structure"""
+    self._structureLabel = Label()
+    labelStyle @ self._structureLabel
+    self._baseHeaderWidget.setText('Welcome to MineLive!')
+
+  def _getStructureLabel(self) -> CoreWidget:
+    """Getter-function for the structure label"""
 
   def _getVSpacerList(self) -> list[VSpacer]:
     """Getter-function for the list of vertical spacers"""
@@ -175,24 +147,22 @@ class LayoutWindow(BaseWindow):
     self._getDoubleSpacerList().append(spacer)
     return spacer
 
-  def setupWidgets(self) -> NoReturn:
+  def setupWidgets(self) -> None:
     """Sets up the widgets"""
-    self._getBaseLayout().addWidget(self._getBaseHeaderWidget(), 0, 0, 1, 2)
-    self._getBaseLayout().addWidget(self._getBoardWidget(), 1, 0, 1, 2)
-    self._getBaseLayout().addWidget(self._getDebugButton(), 2, 1, )
-    self._getBaseLayout().addWidget(self._getHSpacer(), 2, 0, )
+    self._getBaseLayout().addWidget(self._getBaseHeaderWidget(), 0, 0, 1, 1)
+    self._getBaseLayout().addWidget(self._getStructureLabel(), 1, 0, 1, 1)
     self._getBaseWidget().setLayout(self._getBaseLayout())
     self.setCentralWidget(self._getBaseWidget())
 
-  def show(self) -> NoReturn:
+  def show(self) -> None:
     """Sets up the widgets before invoking the show super call"""
     self.setupWidgets()
     BaseWindow.show(self)
 
-  def keyReleaseEvent(self, event: QKeyEvent) -> NoReturn:
+  def keyReleaseEvent(self, event: QKeyEvent) -> None:
     """Triggers spell checking"""
     BaseWindow.keyReleaseEvent(self, event)
 
-  def keyPressEvent(self, event: QKeyEvent) -> NoReturn:
+  def keyPressEvent(self, event: QKeyEvent) -> None:
     """Triggers spell checking"""
     BaseWindow.keyPressEvent(self, event)

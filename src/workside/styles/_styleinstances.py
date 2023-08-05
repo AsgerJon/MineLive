@@ -151,8 +151,7 @@ _textButton = dict(
   lineWidth=1,
   fontFamily=Family.modern,
   fontWeight=QFont.Weight.Normal,
-  fontSize=14
-  ,
+  fontSize=14,
 )
 backgroundStyle = BaseStyle('Background', _backgroundData)
 bezelStyle = BaseStyle('Bezels', _bezelData)

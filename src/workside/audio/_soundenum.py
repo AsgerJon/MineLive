@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import os
-from typing import Never, NoReturn
+from typing import Never
 
 from PySide6.QtCore import QUrl, QObject
 from PySide6.QtWidgets import QApplication
@@ -27,13 +27,13 @@ class _SoundProperties(Iterify):
   @staticmethod
   def _getSoundPath() -> str:
     """Getter-function for sound path"""
-    fromEnv = os.getenv('WORKSIDE_AUDIO_FILES')
+    envName = 'WORKSIDE_AUDIO_FILES'
+    fromEnv = os.getenv(envName)
     if fromEnv:
+      print(fromEnv)
       return fromEnv
-    root = os.getenv('CHESSGPT')
-    there = os.path.join(
-      *stringList('src, visualchess, chesspieces, sounds'))
-    return os.path.join(root, there)
+    e = """Environment variable %s not recognized!""" % envName
+    raise KeyError(e)
 
   def __init__(self, *args, **kwargs) -> None:
     parent = CoreWidget.parseParent(*args, **kwargs)
@@ -49,7 +49,7 @@ class _SoundProperties(Iterify):
       return self._parent
     return QApplication.instance()
 
-  def _createSoundEffect(self) -> NoReturn:
+  def _createSoundEffect(self) -> None:
     """Creator-function for the sound effect"""
     self._soundEffect = SoundEffect(
       self._getParent(), Settings.deviceName)
@@ -94,7 +94,7 @@ class _SoundProperties(Iterify):
     """Illegal setter function"""
     raise ReadOnlyError('filePath')
 
-  def _createUrl(self) -> NoReturn:
+  def _createUrl(self) -> None:
     """Creator function for the url"""
     self._url = QUrl.fromLocalFile(self._getFilePath())
 
@@ -122,7 +122,7 @@ class Sound(_SoundProperties):
   """Each sound effect is defined here as Sound enum"""
 
   @classmethod
-  def createAll(cls, *args) -> NoReturn:
+  def createAll(cls, *args) -> None:
     """Collects all wave files in given folder. Defaults to folder given
     by soundPath"""
     folder = cls._getSoundPath()
@@ -144,7 +144,7 @@ class Sound(_SoundProperties):
     raise TypeError
 
   @classmethod
-  def __old__(cls, *args, **kwargs) -> NoReturn:
+  def __old__(cls, *args, **kwargs) -> None:
     """Attempts to find an existing instance"""
     name = cls._parseArguments(*args, **kwargs)
     instances = getattr(cls, '__instances__', None)
@@ -159,14 +159,14 @@ class Sound(_SoundProperties):
     _SoundProperties.__init__(self, *args, **kwargs)
     self._name = self._parseArguments(*args, **kwargs)
 
-  def _loadSound(self, ) -> NoReturn:
+  def _loadSound(self, ) -> None:
     """Loads the sound file"""
     self.effect.setSource(self.url)
 
-  def handlePlay(self) -> NoReturn:
+  def handlePlay(self) -> None:
     """Handler function for the play signal emitted by the sound board."""
 
-  def play(self) -> NoReturn:
+  def play(self) -> None:
     """Triggers the sound effect"""
     self.effect.play()
 
@@ -179,6 +179,6 @@ class Sound(_SoundProperties):
     """Code Representation"""
     return """SoundEffect.%s""" % self.name
 
-  def __call__(self) -> NoReturn:
+  def __call__(self) -> None:
     """Triggers the sound effect"""
     self.effect.play()

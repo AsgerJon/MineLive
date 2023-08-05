@@ -1,10 +1,8 @@
 """BaseWindow"""
-#  Copyright (c) 2023 Asger Jon Vistisen
 #  MIT Licence
+#  Copyright (c) 2023 Asger Jon Vistisen
 
 from __future__ import annotations
-
-from typing import NoReturn
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction, QKeyEvent, QKeySequence
@@ -97,12 +95,12 @@ class BaseWindow(QMainWindow):
     helpMenu.addAction(self.debugAction11)
     helpMenu.addAction(self.debugAction12)
 
-  def show(self) -> NoReturn:
+  def show(self) -> None:
     """Sets up debuggers"""
     self.setupDebuggers()
     QMainWindow.show(self)
 
-  def setupDebuggers(self) -> NoReturn:
+  def setupDebuggers(self) -> None:
     """Setting up the actions"""
     self.debugAction01.setShortcut(QKeySequence.fromString('F1'))
     self.debugAction01.setShortcutContext(
@@ -164,68 +162,68 @@ class BaseWindow(QMainWindow):
       Qt.ShortcutContext.ApplicationShortcut)
     self.debugAction12.triggered.connect(self.debugFunc12)
 
-  def keyReleaseEvent(self, event: QKeyEvent) -> NoReturn:
+  def keyReleaseEvent(self, event: QKeyEvent) -> None:
     """Triggers spell checking"""
     QMainWindow.keyReleaseEvent(self, event)
 
-  def keyPressEvent(self, event: QKeyEvent) -> NoReturn:
+  def keyPressEvent(self, event: QKeyEvent) -> None:
     """Triggers spell checking"""
     QMainWindow.keyPressEvent(self, event)
 
-  def debugFunc01(self) -> NoReturn:
+  def debugFunc01(self) -> None:
     """Debugger 01"""
 
-  def debugFunc02(self) -> NoReturn:
+  def debugFunc02(self) -> None:
     """Debugger 02"""
 
-  def debugFunc03(self) -> NoReturn:
+  def debugFunc03(self) -> None:
     """Debugger 03"""
 
-  def debugFunc04(self) -> NoReturn:
+  def debugFunc04(self) -> None:
     """Debugger 04"""
 
-  def debugFunc05(self) -> NoReturn:
+  def debugFunc05(self) -> None:
     """Debugger 05"""
 
-  def debugFunc06(self) -> NoReturn:
+  def debugFunc06(self) -> None:
     """Debugger 06"""
 
-  def debugFunc07(self) -> NoReturn:
+  def debugFunc07(self) -> None:
     """Debugger 07"""
 
-  def debugFunc08(self) -> NoReturn:
+  def debugFunc08(self) -> None:
     """Debugger 08"""
 
-  def debugFunc09(self) -> NoReturn:
+  def debugFunc09(self) -> None:
     """Debugger 09"""
 
-  def debugFunc10(self) -> NoReturn:
+  def debugFunc10(self) -> None:
     """Debugger 10"""
 
-  def debugFunc11(self) -> NoReturn:
+  def debugFunc11(self) -> None:
     """Debugger 11"""
 
-  def debugFunc12(self) -> NoReturn:
+  def debugFunc12(self) -> None:
     """Debugger 12"""
 
   # Define slots
-  def newFile(self) -> NoReturn:
+  def newFile(self) -> None:
     """Creates a new file."""
 
-  def openFile(self) -> NoReturn:
+  def openFile(self) -> None:
     """Opens an existing file."""
 
-  def saveFile(self) -> NoReturn:
+  def saveFile(self) -> None:
     """Saves the current file"""
 
-  def saveFileAs(self) -> NoReturn:
+  def saveFileAs(self) -> None:
     """Saves the current file with a new name"""
 
-  def cut(self) -> NoReturn:
+  def cut(self) -> None:
     """Cuts the selected text"""
 
-  def copy(self) -> NoReturn:
+  def copy(self) -> None:
     """Copies the selected text"""
 
-  def paste(self) -> NoReturn:
+  def paste(self) -> None:
     """Pastes the copied or cut text"""
