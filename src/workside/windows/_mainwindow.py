@@ -19,12 +19,12 @@ class MainWindow(LayoutWindow):
     LayoutWindow.__init__(self)
     self.setMinimumWidth(480)
     self.setMinimumHeight(640)
-    self.setWindowTitle('Welcome to WorkSide!')
+    self.setWindowTitle('FUCK FUKC !')
 
   def show(self) -> None:
     """Reimplementation of show method"""
-    LayoutWindow.show(self)
     self.setupActions()
+    LayoutWindow.show(self)
 
   def setupActions(self) -> None:
     """Sets up the actions"""

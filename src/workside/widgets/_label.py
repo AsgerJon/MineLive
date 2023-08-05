@@ -1,22 +1,20 @@
 """Label provides an alternative to QLabel"""
-#  Copyright (c) 2023 Asger Jon Vistisen
 #  MIT Licence
+#  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
 import string
-from typing import NoReturn, Never
+from random import choices
 
 from PySide6.QtCore import Qt, QRectF
 from PySide6.QtGui import QPaintEvent, QPainter, QFontMetrics, QFont
 from PySide6.QtWidgets import QSizePolicy
 from icecream import ic
 from worktoy.core import maybe
-from worktoy.waitaminute import ReadOnlyError
 
-from workside.styles import labelStyle, BaseStyle, Family, headerStyle
+from workside.styles import BaseStyle, Family, headerStyle
 from workside.widgets import CoreWidget
 from workside.settings import Settings
-from random import choices
 
 ic.configureOutput(includeContext=True)
 
@@ -49,12 +47,12 @@ class Label(CoreWidget):
     self.setSizePolicy(_policy)
     self.setStyle(headerStyle)
 
-  def setFont(self, font: QFont) -> NoReturn:
+  def setFont(self, font: QFont) -> None:
     """Setter-function for the font"""
     self._createFont(font)
     self._createFontMetrics()
 
-  def _createFont(self, font: QFont = None) -> NoReturn:
+  def _createFont(self, font: QFont = None) -> None:
     """Creator-function for font"""
     if font is None:
       self._font = Family.modern.asQFont()
@@ -72,7 +70,7 @@ class Label(CoreWidget):
     self._createFontMetrics(font)
     return font
 
-  def _createFontMetrics(self, font: QFont = None) -> NoReturn:
+  def _createFontMetrics(self, font: QFont = None) -> None:
     """Creator-function for the font metrics"""
     if font is None:
       font = self._getFont()
@@ -97,7 +95,7 @@ class Label(CoreWidget):
       return self._getFontMetrics().boundingRect(text).toRectF()
     raise TypeError
 
-  def setStyle(self, style: BaseStyle) -> NoReturn:
+  def setStyle(self, style: BaseStyle) -> None:
     """Reimplementation of the style setter such as to create the font
     metrics immediately"""
     style.setViewPort(self.getViewPortF())
@@ -105,7 +103,7 @@ class Label(CoreWidget):
     self._createFontMetrics(font)
     CoreWidget.setStyle(self, style)
 
-  def setText(self, text: str) -> NoReturn:
+  def setText(self, text: str) -> None:
     """Setter-function for the text"""
     for word in text.split(' '):
       self._getWords().append(word)
@@ -133,13 +131,13 @@ class Label(CoreWidget):
       return self._words
     raise TypeError
 
-  def show(self) -> NoReturn:
+  def show(self) -> None:
     """Reimplementation inserting a measure of the bounding rectangle
     setting the size"""
     CoreWidget.show(self)
     self.setMinimumSize(self._getBoundingRect().size())
 
-  def paintEvent(self, event: QPaintEvent) -> NoReturn:
+  def paintEvent(self, event: QPaintEvent) -> None:
     """Implementation of paint event"""
     painter = QPainter()
     painter.begin(self)

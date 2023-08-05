@@ -6,7 +6,7 @@ implement methods for dynamic functionalities of the widgets."""
 from __future__ import annotations
 
 from PySide6.QtGui import QKeyEvent, QTextCursor
-from PySide6.QtWidgets import QVBoxLayout, QGridLayout, QHBoxLayout
+from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QWidget
 from icecream import ic
 
@@ -38,37 +38,9 @@ class LayoutWindow(BaseWindow):
     self._structureLabel = None
     self._centralWidget = None
     self._baseGridLayout = None
-    self._baseVerticalBoxLayout = None
-    self._baseHorizontalBoxLayout = None
     self._horizontalSpacers = []
     self._verticalSpacers = []
     self._doubleSpacers = []
-
-  def _createBaseVerticalLayout(self) -> None:
-    """Creator-function for the vertical base layout"""
-    self._baseVerticalBoxLayout = QVBoxLayout()
-
-  def _getBaseVerticalBoxLayout(self) -> QVBoxLayout:
-    """Getter-function for the vertical base layout"""
-    if self._baseVerticalBoxLayout is None:
-      self._createBaseVerticalLayout()
-      return self._getBaseVerticalBoxLayout()
-    if isinstance(self._baseVerticalBoxLayout, QVBoxLayout):
-      return self._baseVerticalBoxLayout
-    raise TypeError
-
-  def _createHorizontalBoxLayout(self) -> None:
-    """Creator function for the horizontal layout"""
-    self._baseHorizontalBoxLayout = QHBoxLayout()
-
-  def _getBaseHorizontalBoxLayout(self) -> QHBoxLayout:
-    """Getter function for the horizontal layout"""
-    if self._baseHorizontalBoxLayout is None:
-      self._createHorizontalBoxLayout()
-      return self._getBaseHorizontalBoxLayout()
-    if isinstance(self._baseHorizontalBoxLayout, QHBoxLayout):
-      return self._baseHorizontalBoxLayout
-    raise TypeError
 
   def _createBaseLayout(self) -> None:
     """Creator-function for the base layout"""
@@ -86,7 +58,7 @@ class LayoutWindow(BaseWindow):
     """Creator-function for the header widget"""
     self._baseHeaderWidget = Label()
     headerStyle @ self._baseHeaderWidget
-    self._baseHeaderWidget.setText('Welcome to MineLive!')
+    self._baseHeaderWidget.setText('OMG!')
 
   def _getBaseHeaderWidget(self) -> CoreWidget:
     """Getter-function for the header widget"""
@@ -112,45 +84,21 @@ class LayoutWindow(BaseWindow):
     """Creator-function for label indicating any present structure"""
     self._structureLabel = Label()
     labelStyle @ self._structureLabel
-    self._baseHeaderWidget.setText('Welcome to MineLive!')
+    self._structureLabel.setText('CUNT!')
 
   def _getStructureLabel(self) -> CoreWidget:
     """Getter-function for the structure label"""
-
-  def _getVSpacerList(self) -> list[VSpacer]:
-    """Getter-function for the list of vertical spacers"""
-    return self._verticalSpacers
-
-  def _getVSpacer(self) -> VSpacer:
-    """Getter-function for the vertical spacer"""
-    spacer = VSpacer()
-    self._getVSpacerList().append(spacer)
-    return spacer
-
-  def _getHSpacerList(self) -> list[HSpacer]:
-    """Getter-function for the list of horizontal spacers"""
-    return self._horizontalSpacers
-
-  def _getHSpacer(self) -> HSpacer:
-    """Getter function for horizontal spacers"""
-    spacer = HSpacer()
-    self._getHSpacerList().append(spacer)
-    return spacer
-
-  def _getDoubleSpacerList(self) -> list[DoubleSpacer]:
-    """Getter-function for list of double spacers"""
-    return self._doubleSpacers
-
-  def _getDoubleSpacer(self) -> DoubleSpacer:
-    """Getter-function for double spacer"""
-    spacer = DoubleSpacer()
-    self._getDoubleSpacerList().append(spacer)
-    return spacer
+    if self._structureLabel is None:
+      self._createStructureLabel()
+      return self._getStructureLabel()
+    if isinstance(self._structureLabel, CoreWidget):
+      return self._structureLabel
 
   def setupWidgets(self) -> None:
     """Sets up the widgets"""
+    print('cunt cunt cunt')
     self._getBaseLayout().addWidget(self._getBaseHeaderWidget(), 0, 0, 1, 1)
-    self._getBaseLayout().addWidget(self._getStructureLabel(), 1, 0, 1, 1)
+    self._getBaseLayout().addWidget(self._getStructureLabel(), 1, 1, 1, 1)
     self._getBaseWidget().setLayout(self._getBaseLayout())
     self.setCentralWidget(self._getBaseWidget())
 

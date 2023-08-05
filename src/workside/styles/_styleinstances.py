@@ -96,12 +96,12 @@ _gridStyleData = dict(
 _labelData = dict(
   fillColor=QColor(0, 0, 0, 0, ),
   fillStyle=Qt.BrushStyle.NoBrush,
-  lineColor=QColor(223, 223, 255, 255),
+  lineColor=QColor(91, 0, 0, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
   fontFamily=Family.cambria,
   fontWeight=QFont.Weight.Bold,
-  fontSize=16,
+  fontSize=12,
 )
 _headerData = dict(
   fillColor=QColor(0, 0, 0, 0, ),
@@ -111,7 +111,7 @@ _headerData = dict(
   lineWidth=1,
   fontFamily=Family.modern,
   fontWeight=QFont.Weight.Bold,
-  fontSize=32,
+  fontSize=18,
 )
 _debugData = dict(
   fillColor=QColor(223, 255, 223, 255, ),

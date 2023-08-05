@@ -92,7 +92,7 @@ class CoreWidget(QWidget):
     self.setupWidgets()
     self.setupActions()
 
-  def _setParent(self, parent: CoreWidget) -> NoReturn:
+  def _setParent(self, parent: CoreWidget) -> None:
     """Setter-function for the parent widget. When using this method the
     parent argument is expected to be of type CoreWidget"""
     if isinstance(parent, CoreWidget):
@@ -103,9 +103,12 @@ class CoreWidget(QWidget):
   def getParent(self) -> CoreWidget:
     """Getter-function for the parent. Using the explicit getter and
     setter for the parent widget requires them to be of type CoreWidget"""
-    return self._parent
+    if isinstance(self._parent, CoreWidget):
+      return self._parent
+    e = """Expected parent to be of type CoreWidget, but received %s!"""
+    raise TypeError(e % type(self._parent))
 
-  def _createStyle(self) -> NoReturn:
+  def _createStyle(self) -> None:
     """Creator function for the default style"""
     self._style = BaseStyle('default', )
     self._style.setViewPort(self.getViewPortF())
@@ -120,17 +123,21 @@ class CoreWidget(QWidget):
       return self._style
     raise TypeError
 
-  def setStyle(self, style: BaseStyle) -> NoReturn:
+  def setStyle(self, style: BaseStyle) -> None:
     """Setter-function for the style"""
-    self._style = style
+    if isinstance(style, BaseStyle):
+      self._style = style
+    else:
+      e = """Expected parent to be of type BaseStyle, but received %s!"""
+      raise TypeError(e % type(self._parent))
 
-  def setupWidgets(self) -> NoReturn:
+  def setupWidgets(self) -> None:
     """Sets up the widgets"""
 
-  def setupActions(self) -> NoReturn:
+  def setupActions(self) -> None:
     """Sets up the actions"""
 
-  def show(self) -> NoReturn:
+  def show(self) -> None:
     """Reimplementation"""
     self.setupWidgets()
     self.setupActions()
