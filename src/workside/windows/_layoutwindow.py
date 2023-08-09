@@ -5,14 +5,13 @@ implement methods for dynamic functionalities of the widgets."""
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from PySide6.QtGui import QKeyEvent, QTextCursor
+from PySide6.QtGui import QKeyEvent, QTextCursor, QPaintEvent
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QWidget
 from icecream import ic
 
 from workside.styles import headerStyle, labelStyle
-from workside.widgets import CoreWidget, VSpacer, HSpacer
-from workside.widgets import DoubleSpacer
+from workside.widgets import CoreWidget, LayoutBackground, GridLayout
 from workside.widgets import Label
 from workside.windows import BaseWindow
 
@@ -44,9 +43,9 @@ class LayoutWindow(BaseWindow):
 
   def _createBaseLayout(self) -> None:
     """Creator-function for the base layout"""
-    self._baseGridLayout = QGridLayout()
+    self._baseGridLayout = GridLayout()
 
-  def _getBaseLayout(self) -> QGridLayout:
+  def _getBaseLayout(self) -> GridLayout:
     """Getter-function for the base layout"""
     if self._baseGridLayout is None:
       self._createBaseLayout()
@@ -58,7 +57,7 @@ class LayoutWindow(BaseWindow):
     """Creator-function for the header widget"""
     self._baseHeaderWidget = Label()
     headerStyle @ self._baseHeaderWidget
-    self._baseHeaderWidget.setText('OMG!')
+    self._baseHeaderWidget.setText('Hardcore!')
 
   def _getBaseHeaderWidget(self) -> CoreWidget:
     """Getter-function for the header widget"""
@@ -70,21 +69,21 @@ class LayoutWindow(BaseWindow):
 
   def _createBaseWidget(self) -> None:
     """Creator-function for the base widget"""
-    self._baseWidget = CoreWidget()
+    self._baseWidget = LayoutBackground()
 
-  def _getBaseWidget(self) -> CoreWidget:
+  def _getBaseWidget(self) -> LayoutBackground:
     """Getter-function for the base widget"""
     if self._baseWidget is None:
       self._createBaseWidget()
       return self._getBaseWidget()
-    if isinstance(self._baseWidget, CoreWidget):
+    if isinstance(self._baseWidget, LayoutBackground):
       return self._baseWidget
 
   def _createStructureLabel(self) -> None:
     """Creator-function for label indicating any present structure"""
     self._structureLabel = Label()
     labelStyle @ self._structureLabel
-    self._structureLabel.setText('CUNT!')
+    self._structureLabel.setText('TechWorld!')
 
   def _getStructureLabel(self) -> CoreWidget:
     """Getter-function for the structure label"""
@@ -96,7 +95,6 @@ class LayoutWindow(BaseWindow):
 
   def setupWidgets(self) -> None:
     """Sets up the widgets"""
-    print('cunt cunt cunt')
     self._getBaseLayout().addWidget(self._getBaseHeaderWidget(), 0, 0, 1, 1)
     self._getBaseLayout().addWidget(self._getStructureLabel(), 1, 1, 1, 1)
     self._getBaseWidget().setLayout(self._getBaseLayout())

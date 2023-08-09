@@ -3,7 +3,8 @@
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QMargins
+from PySide6.QtGui import QFont
 from icecream import ic
 
 ic.configureOutput(includeContext=True)
@@ -26,5 +27,15 @@ class Settings:
 
   minimumWidgetSize = QSize(32, 32)
   minimumFontSize = 10
+
+  #  Label
+  labelMargins = QMargins(4, 4, 4, 4)
+  labelPadding = QMargins(2, 2, 2, 2)
+  
+  defaultFont = QFont()
+  from workside.styles import Family
+  defaultFont @ Family.courierNew
+  defaultFont.setWeight(QFont.Weight.Normal)
+  defaultFont.setPointSize(12)
 
   DEBUGGING = True

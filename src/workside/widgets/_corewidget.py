@@ -4,15 +4,12 @@ functionality."""
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from typing import NoReturn
-
-from PySide6.QtCore import QRectF, QRect, QPointF, QSizeF, QSize
-from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtCore import QRectF, QRect, QPointF, QSizeF, QSize, Signal
+from PySide6.QtGui import QResizeEvent
+from PySide6.QtWidgets import QWidget
 from icecream import ic
-from worktoy.core import maybe
-from worktoy.parsing import extractArg
-from worktoy.stringtools import stringList
 
+from workside.functional import parseParent
 from workside.settings import Settings
 from workside.styles import BaseStyle
 
@@ -21,76 +18,21 @@ ic.configureOutput(includeContext=True)
 
 class CoreWidget(QWidget):
   """CoreWidget subclasses QWidget providing common and general
-  functionality.
-  #  MIT Licence
-  #  Copyright (c) 2023 Asger Jon Vistisen"""
+  functionality."""
 
-  @staticmethod
-  def createSizePolicy(*args, **kwargs) -> QSizePolicy:
-    """Creator function for a size policy according to specification given
-    in arguments"""
-    verticalKeys = stringList('vertical, v, verticalPolicy')
-    verticalSizePolicy, args, kwargs = extractArg(
-      QSizePolicy.Policy, verticalKeys, *args, **kwargs)
-    horizontalKeys = stringList('horizontal, h, horizontalPolicy')
-    horizontalSizePolicy, args, kwargs = extractArg(
-      QSizePolicy.Policy, horizontalKeys, *args, **kwargs)
-    policy = QSizePolicy()
-    verticalDefault = QSizePolicy.Policy.Preferred
-    horizontalDefault = QSizePolicy.Policy.Preferred
-    verticalSizePolicy = maybe(verticalSizePolicy, verticalDefault)
-    horizontalSizePolicy = maybe(horizontalSizePolicy, horizontalDefault)
-    policy.setVerticalPolicy(verticalSizePolicy)
-    policy.setHorizontalPolicy(horizontalSizePolicy)
-    return policy
-
-  @classmethod
-  def contract(cls) -> QSizePolicy:
-    """Creator function for a size policy contracting vertically,
-    and expanding horizontally"""
-    return cls.createSizePolicy(
-      vertical=QSizePolicy.Policy.Maximum,
-      horizontal=QSizePolicy.Policy.Maximum)
-
-  @classmethod
-  def expandHorizontalPolicy(cls) -> QSizePolicy:
-    """Creator function for a size policy expanding vertically,
-    and contracting horizontally"""
-    return cls.createSizePolicy(
-      vertical=QSizePolicy.Policy.MinimumExpanding,
-      horizontal=QSizePolicy.Policy.Maximum)
-
-  @classmethod
-  def expandVerticalPolicy(cls) -> QSizePolicy:
-    """Creator function for a size policy expanding vertically,
-    and contracting horizontally"""
-    return cls.createSizePolicy(
-      horizontal=QSizePolicy.Policy.Maximum,
-      vertical=QSizePolicy.Policy.MinimumExpanding, )
-
-  @classmethod
-  def doubleExpand(cls) -> QSizePolicy:
-    """Creator function for a size policy contracting vertically,
-    and expanding horizontally"""
-    return cls.createSizePolicy(
-      vertical=QSizePolicy.Policy.MinimumExpanding,
-      horizontal=QSizePolicy.Policy.MinimumExpanding)
-
-  @staticmethod
-  def parseParent(*args, **kwargs) -> QWidget:
-    """Parses arguments to parent"""
-    parentKeys = stringList('parent, main, mainWindow, window')
-    parent, args, kwargs = extractArg(QWidget, parentKeys, *args, **kwargs)
-    if isinstance(parent, QWidget):
-      return parent
+  resized = Signal()
+  newSize = Signal(QSize)
 
   def __init__(self, *args, **kwargs) -> None:
-    parent = self.parseParent(*args, **kwargs)
+    parent = parseParent(*args, **kwargs)
     QWidget.__init__(self, parent)
     self._parent = parent
     self._style = None
-    self.setupWidgets()
-    self.setupActions()
+
+  def update(self, *args, **kwargs) -> None:
+    """Reimplementation emitting signals when update request is received
+    and when it is completed"""
+    QWidget.update(self, *args, **kwargs)
 
   def _setParent(self, parent: CoreWidget) -> None:
     """Setter-function for the parent widget. When using this method the
@@ -111,7 +53,6 @@ class CoreWidget(QWidget):
   def _createStyle(self) -> None:
     """Creator function for the default style"""
     self._style = BaseStyle('default', )
-    self._style.setViewPort(self.getViewPortF())
 
   def getStyle(self) -> BaseStyle:
     """Getter-function for the style"""
@@ -119,7 +60,6 @@ class CoreWidget(QWidget):
       self._createStyle()
       return self.getStyle()
     if isinstance(self._style, BaseStyle):
-      self._style.setViewPort(self.getViewPort())
       return self._style
     raise TypeError
 
@@ -131,21 +71,14 @@ class CoreWidget(QWidget):
       e = """Expected parent to be of type BaseStyle, but received %s!"""
       raise TypeError(e % type(self._parent))
 
-  def setupWidgets(self) -> None:
-    """Sets up the widgets"""
-
-  def setupActions(self) -> None:
-    """Sets up the actions"""
-
   def show(self) -> None:
     """Reimplementation"""
-    self.setupWidgets()
-    self.setupActions()
     return QWidget.show(self)
 
   def __rmatmul__(self, other: BaseStyle) -> CoreWidget:
     """Applies given base style to self"""
-    return self.setStyle(other)
+    self.setStyle(other)
+    return self
 
   def getViewPortF(self) -> QRectF:
     """Getter-function for viewport as floating points"""
@@ -163,3 +96,9 @@ class CoreWidget(QWidget):
   def minimumSizeHint(self) -> QSize:
     """Implementation of minimum size hint"""
     return Settings.minimumWidgetSize
+
+  def resizeEvent(self, event: QResizeEvent) -> None:
+    """Connects to signal"""
+    self.resized.emit()
+    self.newSize.emit(event.size())
+    QWidget.resizeEvent(self, event)

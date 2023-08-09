@@ -96,10 +96,10 @@ _gridStyleData = dict(
 _labelData = dict(
   fillColor=QColor(0, 0, 0, 0, ),
   fillStyle=Qt.BrushStyle.NoBrush,
-  lineColor=QColor(91, 0, 0, 255),
+  lineColor=QColor(0, 0, 0, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.cambria,
+  fontFamily=Family.modern,
   fontWeight=QFont.Weight.Bold,
   fontSize=12,
 )

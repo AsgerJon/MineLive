@@ -6,6 +6,8 @@ from __future__ import annotations
 from icecream import ic
 
 from ._corewidget import CoreWidget
+from ._gridlayout import GridLayout
+from ._layoutBackground import LayoutBackground
 from ._mousebutton import MouseButton
 from ._buttonfactory import buttonFactory
 from ._abstractbutton import AbstractButton

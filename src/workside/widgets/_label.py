@@ -6,13 +6,12 @@ from __future__ import annotations
 import string
 from random import choices
 
-from PySide6.QtCore import Qt, QRectF
-from PySide6.QtGui import QPaintEvent, QPainter, QFontMetrics, QFont
-from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtCore import Qt, QRectF, QMargins
+from PySide6.QtGui import QPaintEvent, QPainter, QFontMetrics, QFont, QColor
 from icecream import ic
 from worktoy.core import maybe
 
-from workside.styles import BaseStyle, Family, headerStyle
+from workside.styles import BaseStyle
 from workside.widgets import CoreWidget
 from workside.settings import Settings
 
@@ -40,22 +39,24 @@ class Label(CoreWidget):
     self._styleSettings = None
     self._fontMetrics = None
     self._font = None
-    _policy = self.createSizePolicy(
-      vertical=QSizePolicy.Policy.Maximum,
-      horizontal=QSizePolicy.Policy.Maximum,
-    )
-    self.setSizePolicy(_policy)
-    self.setStyle(headerStyle)
+    self._margins = None
 
-  def setFont(self, font: QFont) -> None:
-    """Setter-function for the font"""
-    self._createFont(font)
-    self._createFontMetrics()
+  def _getMargins(self) -> QMargins:
+    """Getter-function for margins"""
+    return self.getStyle().getMargins()
+
+  def _getPadding(self) -> QMargins:
+    """Getter-function for padding"""
+    return self.getStyle().getMargins()
+
+  def _getBorderWidth(self) -> QMargins:
+    """Getter-function for border width"""
+    return self.getStyle().getBorderWidth()
 
   def _createFont(self, font: QFont = None) -> None:
     """Creator-function for font"""
     if font is None:
-      self._font = Family.modern.asQFont()
+      self._font = Settings.defaultFont
     elif isinstance(font, QFont):
       self._font = font
     else:
@@ -69,6 +70,11 @@ class Label(CoreWidget):
     font = self.getStyle().getFont()
     self._createFontMetrics(font)
     return font
+
+  def setFont(self, font: QFont) -> None:
+    """Setter-function for the font"""
+    self._createFont(font)
+    self._createFontMetrics(font)
 
   def _createFontMetrics(self, font: QFont = None) -> None:
     """Creator-function for the font metrics"""
@@ -98,9 +104,7 @@ class Label(CoreWidget):
   def setStyle(self, style: BaseStyle) -> None:
     """Reimplementation of the style setter such as to create the font
     metrics immediately"""
-    style.setViewPort(self.getViewPortF())
-    font = style.getFont()
-    self._createFontMetrics(font)
+    self.setFont(style.getFont())
     CoreWidget.setStyle(self, style)
 
   def setText(self, text: str) -> None:
@@ -119,7 +123,12 @@ class Label(CoreWidget):
         break
       else:
         words.append(word)
-    return ' '.join(reversed(words))
+    text = ' '.join(reversed(words))
+    fontMetrics = self._getFontMetrics()
+    boundingRect = fontMetrics.boundingRect(text) + self._getMargins()
+    boundingSize = boundingRect.size()
+    self.setMinimumSize(boundingSize)
+    return text
 
   def _getWords(self, ) -> list[str]:
     """Getter-function for the list of strings to be used construct the
@@ -134,15 +143,25 @@ class Label(CoreWidget):
   def show(self) -> None:
     """Reimplementation inserting a measure of the bounding rectangle
     setting the size"""
-    CoreWidget.show(self)
     self.setMinimumSize(self._getBoundingRect().size())
+    CoreWidget.show(self)
 
   def paintEvent(self, event: QPaintEvent) -> None:
     """Implementation of paint event"""
+    CoreWidget.paintEvent(self, event)
+    alignFlag = Qt.AlignmentFlag.AlignCenter
     painter = QPainter()
     painter.begin(self)
     self.getStyle() @ painter
-    viewRect = painter.viewport()
-    alignFlag = Qt.AlignmentFlag.AlignCenter
-    painter.drawText(viewRect, alignFlag, self.getText())
+    text = self.getText()
+    viewRectF = painter.viewport().toRectF()
+    viewCenter = viewRectF.center()
+    textRectF = viewRectF - self._getMargins()
+    textRectF.moveCenter(viewCenter)
+    boundingRect = QRectF(painter.boundingRect(textRectF, alignFlag, text))
+    boundingRect.moveCenter(viewCenter)
+    painter.fillRect(viewRectF, QColor(255, 0, 0, 63))
+    painter.eraseRect(boundingRect, )
+    painter.fillRect(boundingRect, QColor(223, 223, 223, 255))
+    painter.drawText(boundingRect, alignFlag, text)
     painter.end()

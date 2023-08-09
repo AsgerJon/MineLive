@@ -1,17 +1,16 @@
 """BaseStyle"""
-#  Copyright (c) 2023 Asger Jon Vistisen
 #  MIT Licence
+#  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from typing import NoReturn, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Qt, QRect, QRectF
+from PySide6.QtCore import Qt, QRectF, QMargins
 from PySide6.QtGui import QBrush, QFont, QPen, QColor, QPainter, \
-  QFontMetrics, QFontMetricsF
+  QFontMetricsF
 from icecream import ic
 from worktoy.core import maybe
 from worktoy.typetools import TypeBag
-from worktoy.waitaminute import ProceduralError
 
 from workside.settings import Settings
 from workside.styles import Family
@@ -33,9 +32,10 @@ class BaseStyle:
     lineColor=QColor(0, 0, 0, 0),
     lineStyle=Qt.PenStyle.SolidLine,
     lineWidth=1,
-    fontFamily=Family.courierNew,
+    fontFamily=Family.COURIERNEW,
     fontWeight=QFont.Weight.Normal,
     fontSize=12,
+    margins=Settings.labelMargins,
   )
 
   def __init__(self, name: str, data: dict = None) -> None:
@@ -44,37 +44,33 @@ class BaseStyle:
       raise TypeError
     self._viewPort = None
     self._name = name
-    self._data = data | BaseStyle._baseValues
     self._data = {}
     for (key, val) in BaseStyle._baseValues.items():
       self._data |= {key: data.get(key, val)}
     self._fontMetrics = None
+    self._margins = None
+
+  def createMargins(self) -> None:
+    """Creator-function for the margins"""
+
+  def getMargins(self) -> QMargins:
+    """Getter-function for the margins"""
+    return self.getData().get('margins')
 
   def getData(self) -> dict:
     """Getter-function for data"""
     return self._data
-
-  def getViewPort(self) -> QRect:
-    """Getter-function for viewport"""
-    if self._viewPort is None:
-      raise ProceduralError('viewPort')
-    return self._viewPort
-
-  def setViewPort(self, viewPort: QRect) -> NoReturn:
-    """Setter-function for viewport"""
-    self._viewPort = viewPort
 
   def getFont(self, ) -> QFont:
     """Getter-function for QFont"""
     font = self._data.get('fontFamily').asQFont()
     weight = self._data.get('fontWeight')
     font.setWeight(weight)
-    viewSize = min(self.getViewPort().width(), self.getViewPort().height())
     fontSize = self._data.get('fontSize')
     font.setPointSize(max(fontSize, Settings.minimumFontSize))
     return font
 
-  def _createFontMetrics(self) -> NoReturn:
+  def _createFontMetrics(self) -> None:
     """Creator-function for font metrics"""
     self._fontMetrics = QFontMetricsF(self.getFont())
 
@@ -82,7 +78,7 @@ class BaseStyle:
     """Getter-function for font metrics"""
     if self._fontMetrics is None:
       self._createFontMetrics()
-      return self._fontMetrics
+      return self.getFontMetrics()
     if isinstance(self._fontMetrics, QFontMetricsF):
       return self._fontMetrics
     msg = """Expected front metrics to be of type %s, but received: %s!"""
@@ -110,7 +106,6 @@ class BaseStyle:
   def __matmul__(self, other: Graphic) -> Graphic:
     """Applies these settings to the given painter"""
     if isinstance(other, QPainter):
-      self.setViewPort(other.viewport())
       other.setPen(self.getPen())
       other.setFont(self.getFont())
       other.setBrush(self.getBrush())
