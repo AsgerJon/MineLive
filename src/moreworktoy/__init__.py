@@ -6,6 +6,8 @@ from ._accessorerror import AccessorError
 from ._secretpropertyerror import SecretPropertyError
 from ._readonlyerror import ReadOnlyError
 from ._protectedpropertyerror import ProtectedPropertyError
+from ._permissionlevel import PermissionLevel
+from ._typesupporterror import TypeSupportError
 from ._field import Field
 from ._enumify import Enumify, EnumifyMeta
 from ._argumenterror import ArgumentError
