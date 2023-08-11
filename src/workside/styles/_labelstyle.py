@@ -9,8 +9,12 @@ from typing import Never
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
 
-from moreworktoy import ReadOnlyError, ProtectedPropertyError
+from moreworktoy import (ReadOnlyError, ProtectedPropertyError,
+                         AbstractField, \
+  PermissionLevel)
 from workside.styles import Family
+
+readOnly = PermissionLevel.READ_ONLY
 
 
 class LabelStyle:
@@ -28,21 +32,6 @@ class LabelStyle:
     margin=2,
   )
 
-  def __init__(self, name: str, data: str, **kwargs) -> None:
-    self._data = data
-    self._data |= dict(**kwargs)
-    self._name = name
-
-  def _getName(self) -> str:
-    """Getter-function for name"""
-    return self._name
-
-  def _setName(self, *_) -> Never:
-    """Setter-function for name"""
-    raise ReadOnlyError('name')
-
-  def _delName(self) -> Never:
-    """Illegal deleter-function"""
-    raise ProtectedPropertyError('name')
-
-  name = property(_getName, _setName, _delName)
+  def __init__(self, name: str, **kwargs) -> None:
+    self._data = LabelStyle.defaultValues | kwargs
+    self._name = AbstractField(name, readOnly, name=name)

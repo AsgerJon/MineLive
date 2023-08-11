@@ -5,14 +5,15 @@ functions invoked with arguments of unsupported types. """
 from __future__ import annotations
 
 from types import TracebackType
-from typing import Never, Self
+from typing import Self, Any
 
-from worktoy.parsing import extractArg
-from worktoy.stringtools import stringList, monoSpace
+from worktoy.core import plenty
+from worktoy.stringtools import monoSpace
+from icecream import ic
 
-from moreworktoy import PermissionLevel, ProtectedPropertyError
-from moreworktoy import ReadOnlyError
+from moreworktoy import PermissionLevel, Field
 
+ic.configureOutput(includeContext=True)
 readOnly = PermissionLevel.READ_ONLY
 
 
@@ -20,16 +21,19 @@ class TypeSupportError(Exception):
   """TypeSupportError is a custom exception intended to be raised by
   functions invoked with arguments of unsupported types. """
 
-  def __init__(self, *args, **kwargs) -> None:
-    typeKeys = stringList('type_, type, fieldType, supportType')
-    self._type, a, kw = extractArg(type, typeKeys, *args, **kwargs)
-    nameKeys = stringList('name, variableName, varName')
-    self._name, args, kwargs = extractArg(str, nameKeys, *args, **kwargs)
-    badKeys = stringList('badArg, badArgument, wrongArgument')
-    self._badArg, args, kwargs = extractArg(self.type_, badKeys, *a, **kw)
-    self._callMeMaybe = None
-    self._instance = None
-    self._className = None
+  badArg = Field()
+  actualType = Field()
+  expectedType = Field()
+  argName = Field()
+  instance = Field()
+  callMeMaybe = Field()
+  className = Field()
+
+  def __init__(self, badArg: Any, type_: type, argName: str) -> None:
+    self.badArg = badArg
+    self.actualType = type(badArg)
+    self.expectedType = type_
+    self.argName = argName
 
   def with_traceback(self, traceBack: TracebackType | None) -> Self:
     """Reimplementation of the method extract context specific information
@@ -39,54 +43,46 @@ class TypeSupportError(Exception):
     instance and well as the class name of the instance will be included
     as well."""
     frame = traceBack.tb_frame
-    self._callMeMaybe = frame.f_code.co_name
-    self._instance = frame.f_locals.get('self', None)
-    if self._instance is not None:
-      self._className = self._instance.__class__.__qualname__
+    self.callMeMaybe = frame.f_code.co_name
+    self.instance = frame.f_locals.get('self', None)
+    if self.instance is not None:
+      self.className = self.instance.__class__.__qualname__
     return Exception.with_traceback(self, traceBack)
 
-  def _getType(self) -> type:
-    """Getter-function for the type"""
-    if isinstance(self._type, type):
-      return self._type
-    raise TypeError
+  def _getContext(self) -> str:
+    """Getter-function for the context in which the error was raised."""
 
-  def _setType(self, *_) -> Never:
-    """Illegal setter function"""
-    raise ReadOnlyError('type')
-
-  def _delType(self, ) -> Never:
-    """Illegal deleter function"""
-    raise ProtectedPropertyError('type')
-
-  def _getName(self) -> str:
-    """Getter-function for name"""
-    if isinstance(self._name, str):
+  def _getInstanceMethod(self) -> str:
+    """Getter-function for the context, if it was an instance method"""
+    instance = self.instance
+    method = self.callMeMaybe
+    cls = self.className
+    if not plenty(instance, method, cls):
       return ''
-    raise TypeError
-
-  def _setName(self, *_) -> Never:
-    """Illegal-setter function for name"""
-    raise ReadOnlyError('name')
-
-  def _delName(self, ) -> Never:
-    """Illegal delete function for name"""
-    raise ProtectedPropertyError('name')
-
-  name = property(_getName, _setName, _delName)
-  type_ = property(_getType, _setType, _delType)
+    msg = """This error was raised by object: (%s.__str__(...)): <br>
+    %s <br>during execution of method: %s!"""
 
   def __repr__(self, ) -> str:
     """Code Representation"""
     cls = self.__class__.__qualname__
-    return '%s(%s, %s)' % (cls, self.type_, self._badArg)
+    bad = self.badArg
+    name = self.argName
+    type_ = self.expectedType
+    return '%s(%s, %s, %s)' % (cls, bad, name, type_)
 
   def __str__(self) -> str:
     """String Representation including inferred contextual information"""
+    title = self.__class__.__qualname__
+    msg = """Expected argument %s to be of type %s, but received: !"""
+    header = msg % (self.argName, self.expectedType)
+    msg = """>>> %s""" % (self.badArg)
+    badArg = msg % self.badArg
+    msg = """of type %s!"""
+    badType = msg % self.actualType
+    msg = """This error occurred during"""
     msg = """Expected argument to be of type: """
-    if self.name:
-      msg = """Expected argument named %s to be of type: """ % self.name
-
+    if self.argName:
+      msg = """Expected argument named %s to be of type: """ % self.argName
     msg = '%s%s, but received %s of type %s! <br>' % (
       msg, self.type_, self._badArg, type(self._badArg))
     if self._instance is None or self._className is None:

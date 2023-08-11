@@ -31,10 +31,10 @@ class Settings:
   #  Label
   labelMargins = QMargins(4, 4, 4, 4)
   labelPadding = QMargins(2, 2, 2, 2)
-  
+
   defaultFont = QFont()
   from workside.styles import Family
-  defaultFont @ Family.courierNew
+  defaultFont @ Family.COURIERNEW
   defaultFont.setWeight(QFont.Weight.Normal)
   defaultFont.setPointSize(12)
 

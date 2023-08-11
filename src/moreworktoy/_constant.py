@@ -6,14 +6,21 @@ existence of the instance. The type is inferred automatically."""
 #  Copyright (c) 2023 Asger Jon Vistisen
 from __future__ import annotations
 
-from typing import Any
+from icecream import ic
 
-from moreworktoy import Field
+from moreworktoy import PermissionLevel, Field
+
+ic.configureOutput(includeContext=True)
 
 
 class Constant(Field):
   """Constant subclasses Field to provide a simplified version when fields
   of constant value are intended."""
 
-  def __init__(self, value: Any) -> None:
-    type_ = type(value)
+  @classmethod
+  def _getPermissionLevel(cls) -> PermissionLevel:
+    """Implementation returning read only permission"""
+    return PermissionLevel.READ_ONLY
+
+  def __init__(self, *args, **kwargs) -> None:
+    Field.__init__(self, *args, **kwargs)

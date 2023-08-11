@@ -112,4 +112,4 @@ class PermissionLevel(Enum):
 
   def __str__(self) -> str:
     """String Representation"""
-    return self._getDescriptions()[self.value]
+    return '%s: %s' % (self.name, self._getDescriptions()[self.value])

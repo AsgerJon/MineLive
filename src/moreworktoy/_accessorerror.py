@@ -10,17 +10,13 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Never
 
-from worktoy.parsing import extractArg
-from worktoy.stringtools import stringList
-
 
 class AccessorError(Exception):
   """AccessorError is a custom Exception raised when an attempt is made to
   access a property in a disallowed way."""
 
-  def __init__(self, *args, **kwargs) -> None:
-    nameKeys = stringList('name, VarName, variable')
-    self._VarName = extractArg(str, nameKeys, *args, **kwargs)
+  def __init__(self, name: str) -> None:
+    self._varName = name
 
   @abstractmethod
   def _getOperation(self) -> str:
@@ -28,8 +24,8 @@ class AccessorError(Exception):
 
   def _getVarName(self, ) -> str:
     """Getter-function for the name of the variable"""
-    if isinstance(self._VarName, str):
-      return self._VarName
+    if isinstance(self._varName, str):
+      return self._varName
     raise TypeError
 
   def _setVarName(self, *_) -> Never:

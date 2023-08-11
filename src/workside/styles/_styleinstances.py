@@ -16,7 +16,7 @@ _baseData = dict(
   lineColor=QColor(0, 0, 0, 0),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -26,7 +26,7 @@ _darkSquareData = dict(
   lineColor=QColor(0, 0, 0, 0),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -36,7 +36,7 @@ _lightSquareData = dict(
   lineColor=QColor(0, 0, 0, 0),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -46,7 +46,7 @@ _bezelData = dict(
   lineColor=QColor(255, 255, 255, 255),  # Black line color
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,  # Increased line width for borders
-  fontFamily=Family.courierNew,  # Courier New font family
+  fontFamily=Family.COURIERNEW,  # Courier New font family
   fontWeight=QFont.Weight.Bold,  # Bold font weight for visibility
   fontSize=14,  # Increased font size for better readability
 )
@@ -56,7 +56,7 @@ _backgroundData = dict(
   lineColor=QColor(200, 200, 200),  # Light gray line color
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -69,7 +69,7 @@ _hoveredSquareData = dict(
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=2,
   # Increased line width for borders of hovered squares
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -79,7 +79,7 @@ _outlineData = dict(
   lineColor=QColor(0, 0, 31, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=2,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -89,7 +89,7 @@ _gridStyleData = dict(
   lineColor=QColor(0, 0, 0, 0),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -99,7 +99,7 @@ _labelData = dict(
   lineColor=QColor(0, 0, 0, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.modern,
+  fontFamily=Family.MODERN,
   fontWeight=QFont.Weight.Bold,
   fontSize=12,
 )
@@ -109,7 +109,7 @@ _headerData = dict(
   lineColor=QColor(0, 0, 91, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.modern,
+  fontFamily=Family.MODERN,
   fontWeight=QFont.Weight.Bold,
   fontSize=18,
 )
@@ -119,7 +119,7 @@ _debugData = dict(
   lineColor=QColor(255, 0, 0, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -129,7 +129,7 @@ _baseButton = dict(
   lineColor=QColor(255, 255, 255, 255),
   lineStyle=Qt.PenStyle.NoPen,
   lineWidth=1,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -139,7 +139,7 @@ _hoverButton = dict(
   lineColor=QColor(255, 255, 255, 255),
   lineStyle=Qt.PenStyle.NoPen,
   lineWidth=2,
-  fontFamily=Family.courierNew,
+  fontFamily=Family.COURIERNEW,
   fontWeight=QFont.Weight.Normal,
   fontSize=12,
 )
@@ -149,7 +149,7 @@ _textButton = dict(
   lineColor=QColor(255, 255, 0, 255),
   lineStyle=Qt.PenStyle.SolidLine,
   lineWidth=1,
-  fontFamily=Family.modern,
+  fontFamily=Family.MODERN,
   fontWeight=QFont.Weight.Normal,
   fontSize=14,
 )
