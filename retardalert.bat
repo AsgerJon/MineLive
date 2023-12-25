@@ -8,7 +8,7 @@ if errorlevel 1 (
     echo Killing existing application instance...
     for /f "tokens=2 delims=," %%i in ('tasklist /NH /FO CSV /FI "IMAGENAME eq python.exe" ^| findstr /R /C:"main.py"') do taskkill /F /PID %%i
 )
-SET PYTHONPATH=%PYTHONPATH%;f:\cloud\minelive\src
+SET PYTHONPATH=%PYTHONPATH%;f:\cloud\worktoy\src
 
 REM Start the application
 python main.py
